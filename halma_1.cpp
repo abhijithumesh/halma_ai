@@ -1,11 +1,14 @@
-#include<stdio.h>
-#include<iostream>
-#include<map>
+#include <stdio.h>
+#include <iostream>
+#include <map>
 #include <fstream>
+#include <vector>
 
 using namespace std;
 
-
+typedef std::pair<int, int> xyCoordinates;
+typedef std::vector<xyCoordinates> pawnVector;
+typedef tuple<xyCoordinates, int> coordinate_dis; 
 
 class HALMA{
 
@@ -14,6 +17,8 @@ private:
     string mMyPawn;
     double mTimeRemaining;
     char mHalmaBoard[16][16];
+    pawnVector mWhitePawn;
+    pawnVector mBlackPawn;
 
 public:
     HALMA()
@@ -27,7 +32,6 @@ public:
         }
     
     }
-
 
     void readInputs()
     {
@@ -125,8 +129,124 @@ public:
         return true;
     }
 
-};
+    char getPawnChar()
+    {
+        return (mMyPawn == "WHITE")? 'W' : 'B';
+    }
 
+    void populatePawns()
+    {
+        for(int i = 0 ; i < 16; i++)
+        {
+            for(int j = 0 ; j < 16; j++)
+            {
+                if(mHalmaBoard[i][j] == 'W')
+                {
+                    mWhitePawn.push_back(std::make_pair(i,j));
+                }
+                else if(mHalmaBoard[i][j] == 'B')
+                {
+                    mBlackPawn.push_back(std::make_pair(i,j));
+                }
+            }   
+        }
+    }
+
+    bool isValidCell(int row, int col)
+    {
+        if( row < 0 || row >=16 || col < 0 || col >=16 )
+            return false;
+
+        return true;
+    }
+
+    void moveUp(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result)
+    {
+        int newRow = row + 1;
+        
+        if(isValidCell(newRow,col))
+        {
+        
+        }
+    
+    }
+
+    void moveDown(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result)
+    {
+    
+    }
+
+    void moveEast(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result)
+    {
+    
+    }
+
+    void moveWest(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result)
+    {
+    
+    }
+
+    void moveNE(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result)
+    {
+    
+    }
+
+    void moveNW(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result)
+    {
+    
+    }
+
+    void moveSE(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result)
+    {
+    
+    }
+
+    void moveSW(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result)
+    {
+    
+    }
+
+    void searchNeighbors(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result)
+    {
+        moveUp(row, col, result);
+        moveDown(row, col, result);
+        moveEast(row, col, result);
+        moveWest(row, col, result);
+        moveNE(row, col, result);
+        moveNW(row, col, result);
+        moveSE(row, col, result);
+        moveSW(row, col, result);
+    }
+
+
+    void findLegalMoves(char turn)
+    {
+        int row, col;
+        multimap<xyCoordinates, vector<coordinate_dis>> result;
+
+        if(turn == 'W')
+        {
+            for(auto itr = mWhitePawn.begin(); itr != mWhitePawn.end(); itr++)
+            {
+                row = itr->first;
+                col = itr->second;
+
+                searchNeighbors(row, col, result);
+            }
+        }
+        else
+        {
+            for(auto itr = mBlackPawn.begin(); itr != mBlackPawn.end(); itr++)
+            {
+                row = itr->first;
+                col = itr->second;
+            
+                searchNeighbors(row, col, result);
+            }
+        }
+    }
+
+};
 
 int main()
 {
