@@ -19,6 +19,7 @@ private:
     char mHalmaBoard[16][16];
     pawnVector mWhitePawn;
     pawnVector mBlackPawn;
+    int mVisited[16][16];
 
 public:
     HALMA()
@@ -29,6 +30,19 @@ public:
             {
                 mHalmaBoard[i][j] = '.';
             }
+        }
+
+    }
+
+    void resetVisited()
+    {
+        for(int i = 0; i < 16; i++)
+        {
+            for(int j = 0; j < 16; j++)
+            {
+                mVisited[i][j] = 0;
+            }
+
         }
     
     }
@@ -160,62 +174,156 @@ public:
         return true;
     }
 
-    void moveUp(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result)
+
+    void findNeighbors(int row, int col, vector<coordinate_dis> vec)
+    {
+        moveUpNeigh(row+1, col, vec, 1);
+        moveDownNeigh(row-1, col, vec, 1);
+        moveEastNeigh(row, col+1, vec, 1);
+        moveWestNeigh(row, col-1, vec, 1);
+        moveNWNeigh(row-1, col-1, vec, 1);
+        moveNENeigh(row-1, col+1, vec, 1);
+        moveSENeigh(row+1, col+1, vec, 1);
+        moveSWNeigh(row+1, col-1, vec, 1);
+    }
+
+    void moveUp(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result, int depth)
     {
         int newRow = row + 1;
         
-        if(isValidCell(newRow,col))
+        if(isValidCell(newRow,col) && !mVisited[newRow][col])
         {
-        
+            mVisited[newRow][col] = 1;
+            if( mHalmaBoard[newRow][col] == '.' && depth == 1 )
+            {
+                xyCoordinates XY = std::make_pair(row,col);
+                vector<coordinate_dis> v;
+
+                v.push_back(make_tuple(std::make_pair(newRow, col), 0));
+
+                result.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(XY, v));
+                return;
+            }
+            else if( mHalmaBoard[newRow][col] != '.' && depth == 1 )
+            {
+                moveUp(newRow, col, result, depth+1);
+            }
+            else if( mHalmaBoard[newRow][col] == '.' && depth == 2 )
+            {
+                vector<coordinate_dis> v;
+                v.push_back(make_tuple(std::make_pair(newRow, col), 0));
+                findNeighbors(newRow, col, v);
+            }
+            else if( mHalmaBoard[newRow][col] != '.' && depth == 2)
+            {
+                return;
+            }
         }
     
     }
 
-    void moveDown(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result)
+    void moveUpNeigh(int row, int col, vector<coordinate_dis> res, int depth)
+    {
+        if(isValidCell(row,col) && !mVisited[row][col])
+        {
+            if(mHalmaBoard[row][col] == '.' && depth == 1)
+            {
+                return;
+            }
+            else if(mHalmaBoard[row][col] != '.' && depth == 1)
+            {
+                moveUpNeigh(row, col, res, 2);
+            }
+            else if(mHalmaBoard[row][col] == '.' && depth == 2)
+            {
+                res.push_back(make_tuple(std::make_pair(row,col),0));
+                findNeighbors(row, col, res);
+            }
+        }
+    
+    }
+
+    void moveDown(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result, int depth)
+    {
+    
+    }
+    
+    void moveDownNeigh(int row, int col, vector<coordinate_dis> res, int depth)
     {
     
     }
 
-    void moveEast(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result)
+    void moveEast(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result, int depth)
     {
     
     }
 
-    void moveWest(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result)
+    void moveEastNeigh(int row, int col, vector<coordinate_dis> res, int depth)
     {
     
     }
 
-    void moveNE(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result)
+    void moveWest(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result, int depth)
     {
     
     }
 
-    void moveNW(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result)
+    void moveWestNeigh(int row, int col, vector<coordinate_dis> res, int depth)
     {
     
     }
 
-    void moveSE(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result)
+    void moveNE(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result, int depth)
     {
     
     }
 
-    void moveSW(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result)
+    void moveNENeigh(int row, int col, vector<coordinate_dis> res, int depth)
+    {
+    
+    }
+
+
+    void moveNW(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result, int depth)
+    {
+    
+    }
+
+    void moveNWNeigh(int row, int col, vector<coordinate_dis> res, int depth)
+    {
+    
+    }
+
+    void moveSE(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result, int depth)
+    {
+    
+    }
+
+    void moveSENeigh(int row, int col, vector<coordinate_dis> res, int depth)
+    {
+    
+    }
+
+    void moveSW(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result, int depth)
+    {
+    
+    }
+
+    void moveSWNeigh(int row, int col, vector<coordinate_dis> res, int depth)
     {
     
     }
 
     void searchNeighbors(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result)
     {
-        moveUp(row, col, result);
-        moveDown(row, col, result);
-        moveEast(row, col, result);
-        moveWest(row, col, result);
-        moveNE(row, col, result);
-        moveNW(row, col, result);
-        moveSE(row, col, result);
-        moveSW(row, col, result);
+        moveUp(row, col, result, 1);
+        moveDown(row, col, result, 1);
+        moveEast(row, col, result, 1);
+        moveWest(row, col, result, 1);
+        moveNE(row, col, result, 1);
+        moveNW(row, col, result, 1);
+        moveSE(row, col, result, 1);
+        moveSW(row, col, result, 1);
     }
 
 
