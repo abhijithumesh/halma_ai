@@ -180,54 +180,55 @@ public:
 
     void findNeighbors(int row, int col, string path)
     {
-        moveUpNeigh(row+1, col, 1, path);
+        cout << __func__ <<"row:" << row << "col:" << col <<endl;
+        moveDownNeigh(row+1, col, 1, path);
         
-        moveDownNeigh(row-1, col, 1, path);
+        moveUpNeigh(row-1, col, 1, path);
         
         moveEastNeigh(row, col+1, 1, path);
 
         moveWestNeigh(row, col-1, 1, path);
         
-        moveNWNeigh(row-1, col-1, 1, path);
-
         moveNENeigh(row-1, col+1, 1, path);
-        
-        moveSENeigh(row+1, col+1, 1, path);
 
+        moveNWNeigh(row-1, col-1, 1, path);
+        
         moveSWNeigh(row+1, col-1, 1, path);
+
+        moveSENeigh(row+1, col+1, 1, path);
     }
 
-    void moveUp(int row, int col, int depth, string path)
+    void moveDown(int row, int col, int depth, string path)
     {
-        int newRow = row + 1;
-        
-        if(isValidCell(newRow,col) && !mVisited[newRow][col])
+        row = row + 1 ;
+        if(isValidCell(row,col) && !mVisited[row][col])
         {
-            mVisited[newRow][col] = 1;
-            if( mHalmaBoard[newRow][col] == '.' && depth == 1 )
+            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            mVisited[row][col] = 1;
+            if( mHalmaBoard[row][col] == '.' && depth == 1 )
             {
-                string pathStr = path + " " + to_string(newRow)+ "," + to_string(col);
+                string pathStr = path + " " + to_string(row)+ "," + to_string(col);
                 vector<coordinate_dis> subOptimalXY;
 
                 // Push the destination XY and path to the destination as well.
-                subOptimalXY.push_back(make_tuple(std::make_pair(newRow, col), pathStr, 0));
+                subOptimalXY.push_back(make_tuple(std::make_pair(row, col), pathStr, 0));
 
                 mResult.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(mSource, subOptimalXY));
                 return;
             }
-            else if( mHalmaBoard[newRow][col] != '.' && depth == 1 )
+            else if( mHalmaBoard[row][col] != '.' && depth == 1 )
             {
-                moveUp(newRow, col, depth+1, path);
+                moveDown(row, col, depth+1, path);
             }
-            else if( mHalmaBoard[newRow][col] == '.' && depth == 2 )
+            else if( mHalmaBoard[row][col] == '.' && depth == 2 )
             {
                 vector<coordinate_dis> v;
-                string pathStr = path + " " + to_string(newRow)+"," + to_string(col);
-                v.push_back(make_tuple(std::make_pair(newRow, col), pathStr, 0));
+                string pathStr = path + " " + to_string(row)+"," + to_string(col);
+                v.push_back(make_tuple(std::make_pair(row, col), pathStr, 0));
                 mResult.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(mSource, v));
-                findNeighbors(newRow, col, pathStr);
+                findNeighbors(row, col, pathStr);
             }
-            else if( mHalmaBoard[newRow][col] != '.' && depth == 2)
+            else if( mHalmaBoard[row][col] != '.' && depth == 2)
             {
                 return;
             }
@@ -235,17 +236,19 @@ public:
     
     }
 
-    void moveUpNeigh(int row, int col, int depth, string path)
+    void moveDownNeigh(int row, int col, int depth, string path)
     {
         if(isValidCell(row,col) && !mVisited[row][col])
         {
+            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            mVisited[row][col] = 1;
             if(mHalmaBoard[row][col] == '.' && depth == 1)
             {
                 return;
             }
             else if(mHalmaBoard[row][col] != '.' && depth == 1)
             {
-                moveUpNeigh(row, col, 2, path);
+                moveDownNeigh(row+1, col, 2, path);
             }
             else if(mHalmaBoard[row][col] == '.' && depth == 2)
             {
@@ -260,74 +263,453 @@ public:
     
     }
 
-    void moveDown(int row, int col, int depth, string path)
+    void moveUp(int row, int col, int depth, string path)
     {
-    
+        row = row - 1 ;
+        if(isValidCell(row,col) && !mVisited[row][col])
+        {
+            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            mVisited[row][col] = 1;
+            if( mHalmaBoard[row][col] == '.' && depth == 1 )
+            {
+                string pathStr = path + " " + to_string(row)+ "," + to_string(col);
+                vector<coordinate_dis> subOptimalXY;
+
+                // Push the destination XY and path to the destination as well.
+                subOptimalXY.push_back(make_tuple(std::make_pair(row, col), pathStr, 0));
+
+                mResult.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(mSource, subOptimalXY));
+                return;
+            }
+            else if( mHalmaBoard[row][col] != '.' && depth == 1 )
+            {
+                moveUp(row, col, depth+1, path);
+            }
+            else if( mHalmaBoard[row][col] == '.' && depth == 2 )
+            {
+                vector<coordinate_dis> v;
+                string pathStr = path + " " + to_string(row)+"," + to_string(col);
+                v.push_back(make_tuple(std::make_pair(row, col), pathStr, 0));
+                mResult.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(mSource, v));
+                findNeighbors(row, col, pathStr);
+            }
+            else if( mHalmaBoard[row][col] != '.' && depth == 2)
+            {
+                return;
+            }
+        }
     }
     
-    void moveDownNeigh(int row, int col, int depth, string path)
+    void moveUpNeigh(int row, int col, int depth, string path)
     {
-    
+        if(isValidCell(row,col) && !mVisited[row][col])
+        {
+            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            mVisited[row][col] = 1;
+            if(mHalmaBoard[row][col] == '.' && depth == 1)
+            {
+                return;
+            }
+            else if(mHalmaBoard[row][col] != '.' && depth == 1)
+            {
+                moveUpNeigh(row-1, col, 2, path);
+            }
+            else if(mHalmaBoard[row][col] == '.' && depth == 2)
+            {
+                vector<coordinate_dis> subOptimalXY;
+                string pathStr = path + " " + to_string(row) + "," + to_string(col);
+                subOptimalXY.push_back(make_tuple(std::make_pair(row,col), pathStr, 0));
+                mResult.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(mSource, subOptimalXY));
+
+                findNeighbors(row, col, pathStr);
+            }
+        } 
     }
 
     void moveEast(int row, int col, int depth, string path)
     {
-    
+        col = col + 1;
+        if(isValidCell(row,col) && !mVisited[row][col])
+        {
+            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            mVisited[row][col] = 1;
+            if( mHalmaBoard[row][col] == '.' && depth == 1 )
+            {
+                string pathStr = path + " " + to_string(row)+ "," + to_string(col);
+                vector<coordinate_dis> subOptimalXY;
+
+                // Push the destination XY and path to the destination as well.
+                subOptimalXY.push_back(make_tuple(std::make_pair(row, col), pathStr, 0));
+
+                mResult.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(mSource, subOptimalXY));
+                return;
+            }
+            else if( mHalmaBoard[row][col] != '.' && depth == 1 )
+            {
+                moveEast(row, col, depth+1, path);
+            }
+            else if( mHalmaBoard[row][col] == '.' && depth == 2 )
+            {
+                vector<coordinate_dis> v;
+                string pathStr = path + " " + to_string(row)+"," + to_string(col);
+                v.push_back(make_tuple(std::make_pair(row, col), pathStr, 0));
+                mResult.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(mSource, v));
+                findNeighbors(row, col, pathStr);
+            }
+            else if( mHalmaBoard[row][col] != '.' && depth == 2)
+            {
+                return;
+            }
+        }    
     }
 
     void moveEastNeigh(int row, int col, int depth, string path)
     {
-    
+        if(isValidCell(row,col) && !mVisited[row][col])
+        {
+            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            mVisited[row][col] = 1;
+            if(mHalmaBoard[row][col] == '.' && depth == 1)
+            {
+                return;
+            }
+            else if(mHalmaBoard[row][col] != '.' && depth == 1)
+            {
+                moveEastNeigh(row, col+1, 2, path);
+            }
+            else if(mHalmaBoard[row][col] == '.' && depth == 2)
+            {
+                vector<coordinate_dis> subOptimalXY;
+                string pathStr = path + " " + to_string(row) + "," + to_string(col);
+                subOptimalXY.push_back(make_tuple(std::make_pair(row,col), pathStr, 0));
+                mResult.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(mSource, subOptimalXY));
+
+                findNeighbors(row, col, pathStr);
+            }
+        } 
     }
 
     void moveWest(int row, int col, int depth, string path)
     {
+        col = col - 1;
+        if(isValidCell(row,col) && !mVisited[row][col])
+        {
+            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            mVisited[row][col] = 1;
+            if( mHalmaBoard[row][col] == '.' && depth == 1 )
+            {
+                string pathStr = path + " " + to_string(row)+ "," + to_string(col);
+                vector<coordinate_dis> subOptimalXY;
+
+                // Push the destination XY and path to the destination as well.
+                subOptimalXY.push_back(make_tuple(std::make_pair(row, col), pathStr, 0));
+
+                mResult.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(mSource, subOptimalXY));
+                return;
+            }
+            else if( mHalmaBoard[row][col] != '.' && depth == 1 )
+            {
+                moveWest(row, col, depth+1, path);
+            }
+            else if( mHalmaBoard[row][col] == '.' && depth == 2 )
+            {
+                vector<coordinate_dis> v;
+                string pathStr = path + " " + to_string(row)+"," + to_string(col);
+                v.push_back(make_tuple(std::make_pair(row, col), pathStr, 0));
+                mResult.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(mSource, v));
+                findNeighbors(row, col, pathStr);
+            }
+            else if( mHalmaBoard[row][col] != '.' && depth == 2)
+            {
+                return;
+            }
+        }
     
     }
 
     void moveWestNeigh(int row, int col, int depth, string path)
     {
-    
+        if(isValidCell(row,col) && !mVisited[row][col])
+        {
+            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            mVisited[row][col] = 1;
+            if(mHalmaBoard[row][col] == '.' && depth == 1)
+            {
+                return;
+            }
+            else if(mHalmaBoard[row][col] != '.' && depth == 1)
+            {
+                moveWestNeigh(row, col-1, 2, path);
+            }
+            else if(mHalmaBoard[row][col] == '.' && depth == 2)
+            {
+                vector<coordinate_dis> subOptimalXY;
+                string pathStr = path + " " + to_string(row) + "," + to_string(col);
+                subOptimalXY.push_back(make_tuple(std::make_pair(row,col), pathStr, 0));
+                mResult.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(mSource, subOptimalXY));
+
+                findNeighbors(row, col, pathStr);
+            }
+        } 
     }
 
     void moveNE(int row, int col, int depth, string path)
     {
-    
+        col = col + 1;
+        row = row - 1;
+        if(isValidCell(row,col) && !mVisited[row][col])
+        {
+            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            mVisited[row][col] = 1;
+            if( mHalmaBoard[row][col] == '.' && depth == 1 )
+            {
+                string pathStr = path + " " + to_string(row)+ "," + to_string(col);
+                vector<coordinate_dis> subOptimalXY;
+
+                // Push the destination XY and path to the destination as well.
+                subOptimalXY.push_back(make_tuple(std::make_pair(row, col), pathStr, 0));
+
+                mResult.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(mSource, subOptimalXY));
+                return;
+            }
+            else if( mHalmaBoard[row][col] != '.' && depth == 1 )
+            {
+                moveNE(row, col, depth+1, path);
+            }
+            else if( mHalmaBoard[row][col] == '.' && depth == 2 )
+            {
+                vector<coordinate_dis> v;
+                string pathStr = path + " " + to_string(row)+"," + to_string(col);
+                v.push_back(make_tuple(std::make_pair(row, col), pathStr, 0));
+                mResult.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(mSource, v));
+                findNeighbors(row, col, pathStr);
+            }
+            else if( mHalmaBoard[row][col] != '.' && depth == 2)
+            {
+                return;
+            }
+        }
+
     }
 
     void moveNENeigh(int row, int col, int depth, string path)
     {
-    
+        if(isValidCell(row,col) && !mVisited[row][col])
+        {
+            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            mVisited[row][col] = 1;
+            if(mHalmaBoard[row][col] == '.' && depth == 1)
+            {
+                return;
+            }
+            else if(mHalmaBoard[row][col] != '.' && depth == 1)
+            {
+                moveNENeigh(row-1, col+1, 2, path);
+            }
+            else if(mHalmaBoard[row][col] == '.' && depth == 2)
+            {
+                vector<coordinate_dis> subOptimalXY;
+                string pathStr = path + " " + to_string(row) + "," + to_string(col);
+                subOptimalXY.push_back(make_tuple(std::make_pair(row,col), pathStr, 0));
+                mResult.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(mSource, subOptimalXY));
+
+                findNeighbors(row, col, pathStr);
+            }
+        } 
     }
 
 
     void moveNW(int row, int col, int depth, string path)
     {
-    
+        col = col - 1;
+        row = row - 1;
+        if(isValidCell(row,col) && !mVisited[row][col])
+        {
+            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            mVisited[row][col] = 1;
+            if( mHalmaBoard[row][col] == '.' && depth == 1 )
+            {
+                string pathStr = path + " " + to_string(row)+ "," + to_string(col);
+                vector<coordinate_dis> subOptimalXY;
+
+                // Push the destination XY and path to the destination as well.
+                subOptimalXY.push_back(make_tuple(std::make_pair(row, col), pathStr, 0));
+
+                mResult.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(mSource, subOptimalXY));
+                return;
+            }
+            else if( mHalmaBoard[row][col] != '.' && depth == 1 )
+            {
+                moveNW(row, col, depth+1, path);
+            }
+            else if( mHalmaBoard[row][col] == '.' && depth == 2 )
+            {
+                vector<coordinate_dis> v;
+                string pathStr = path + " " + to_string(row)+"," + to_string(col);
+                v.push_back(make_tuple(std::make_pair(row, col), pathStr, 0));
+                mResult.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(mSource, v));
+                findNeighbors(row, col, pathStr);
+            }
+            else if( mHalmaBoard[row][col] != '.' && depth == 2)
+            {
+                return;
+            }
+        }
+ 
     }
 
     void moveNWNeigh(int row, int col, int depth, string path)
     {
-    
+        if(isValidCell(row,col) && !mVisited[row][col])
+        {
+            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            mVisited[row][col] = 1;
+            if(mHalmaBoard[row][col] == '.' && depth == 1)
+            {
+                return;
+            }
+            else if(mHalmaBoard[row][col] != '.' && depth == 1)
+            {
+                moveNWNeigh(row-1, col-1, 2, path);
+            }
+            else if(mHalmaBoard[row][col] == '.' && depth == 2)
+            {
+                vector<coordinate_dis> subOptimalXY;
+                string pathStr = path + " " + to_string(row) + "," + to_string(col);
+                subOptimalXY.push_back(make_tuple(std::make_pair(row,col), pathStr, 0));
+                mResult.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(mSource, subOptimalXY));
+
+                findNeighbors(row, col, pathStr);
+            }
+        }
     }
 
     void moveSE(int row, int col, int depth, string path)
     {
-    
+        col = col + 1;
+        row = row + 1;
+        if(isValidCell(row,col) && !mVisited[row][col])
+        {
+            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            mVisited[row][col] = 1;
+            if( mHalmaBoard[row][col] == '.' && depth == 1 )
+            {
+                string pathStr = path + " " + to_string(row)+ "," + to_string(col);
+                vector<coordinate_dis> subOptimalXY;
+
+                // Push the destination XY and path to the destination as well.
+                subOptimalXY.push_back(make_tuple(std::make_pair(row, col), pathStr, 0));
+
+                mResult.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(mSource, subOptimalXY));
+                return;
+            }
+            else if( mHalmaBoard[row][col] != '.' && depth == 1 )
+            {
+                moveSE(row, col, depth+1, path);
+            }
+            else if( mHalmaBoard[row][col] == '.' && depth == 2 )
+            {
+                vector<coordinate_dis> v;
+                string pathStr = path + " " + to_string(row)+"," + to_string(col);
+                v.push_back(make_tuple(std::make_pair(row, col), pathStr, 0));
+                mResult.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(mSource, v));
+                findNeighbors(row, col, pathStr);
+            }
+            else if( mHalmaBoard[row][col] != '.' && depth == 2)
+            {
+                return;
+            }
+        } 
     }
 
     void moveSENeigh(int row, int col, int depth, string path)
     {
-    
+        if(isValidCell(row,col) && !mVisited[row][col])
+        {
+            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            mVisited[row][col] = 1;
+            if(mHalmaBoard[row][col] == '.' && depth == 1)
+            {
+                return;
+            }
+            else if(mHalmaBoard[row][col] != '.' && depth == 1)
+            {
+                moveSENeigh(row+1, col+1, 2, path);
+            }
+            else if(mHalmaBoard[row][col] == '.' && depth == 2)
+            {
+                vector<coordinate_dis> subOptimalXY;
+                string pathStr = path + " " + to_string(row) + "," + to_string(col);
+                subOptimalXY.push_back(make_tuple(std::make_pair(row,col), pathStr, 0));
+                mResult.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(mSource, subOptimalXY));
+
+                findNeighbors(row, col, pathStr);
+            }
+        } 
     }
 
     void moveSW(int row, int col, int depth, string path)
     {
-    
+        col = col - 1;
+        row = row + 1;
+        if(isValidCell(row,col) && !mVisited[row][col])
+        {
+            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            mVisited[row][col] = 1;
+            if( mHalmaBoard[row][col] == '.' && depth == 1 )
+            {
+                string pathStr = path + " " + to_string(row)+ "," + to_string(col);
+                vector<coordinate_dis> subOptimalXY;
+
+                // Push the destination XY and path to the destination as well.
+                subOptimalXY.push_back(make_tuple(std::make_pair(row, col), pathStr, 0));
+
+                mResult.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(mSource, subOptimalXY));
+                return;
+            }
+            else if( mHalmaBoard[row][col] != '.' && depth == 1 )
+            {
+                moveSW(row, col, depth+1, path);
+            }
+            else if( mHalmaBoard[row][col] == '.' && depth == 2 )
+            {
+                vector<coordinate_dis> v;
+                string pathStr = path + " " + to_string(row)+"," + to_string(col);
+                v.push_back(make_tuple(std::make_pair(row, col), pathStr, 0));
+                mResult.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(mSource, v));
+                findNeighbors(row, col, pathStr);
+            }
+            else if( mHalmaBoard[row][col] != '.' && depth == 2)
+            {
+                return;
+            }
+        } 
     }
 
     void moveSWNeigh(int row, int col, int depth, string path)
     {
+        if(isValidCell(row,col) && !mVisited[row][col])
+        {
+            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            mVisited[row][col] = 1;
+            if(mHalmaBoard[row][col] == '.' && depth == 1)
+            {
+                return;
+            }
+            else if(mHalmaBoard[row][col] != '.' && depth == 1)
+            {
+                moveSWNeigh(row+1, col-1, 2, path);
+            }
+            else if(mHalmaBoard[row][col] == '.' && depth == 2)
+            {
+                vector<coordinate_dis> subOptimalXY;
+                string pathStr = path + " " + to_string(row) + "," + to_string(col);
+                subOptimalXY.push_back(make_tuple(std::make_pair(row,col), pathStr, 0));
+                mResult.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(mSource, subOptimalXY));
+
+                findNeighbors(row, col, pathStr);
+            }
+        }
     
     }
 
@@ -337,28 +719,36 @@ public:
         string path = to_string(row)+","+to_string(col);
 
         resetVisited();
-        moveUp(row, col, 1, path);
-        
-        resetVisited();
+        mVisited[row][col] = 1;
         moveDown(row, col, 1, path);
         
         resetVisited();
+        mVisited[row][col] = 1;
+        moveUp(row, col, 1, path);
+        
+        resetVisited();
+        mVisited[row][col] = 1;
         moveEast(row, col, 1, path);
         
         resetVisited();
+        mVisited[row][col] = 1;
         moveWest(row, col, 1, path);
         
         resetVisited();
+        mVisited[row][col] = 1;
         moveNE(row, col, 1, path);
         
         resetVisited();
+        mVisited[row][col] = 1;
         moveNW(row, col, 1, path);
         
         resetVisited();
-        moveSE(row, col, 1, path);
+        mVisited[row][col] = 1;
+        moveSW(row, col, 1, path);
         
         resetVisited();
-        moveSW(row, col, 1, path);
+        mVisited[row][col] = 1;
+        moveSE(row, col, 1, path);
     }
 
     void setSource(xyCoordinates _source)
