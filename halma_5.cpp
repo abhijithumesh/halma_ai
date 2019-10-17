@@ -58,7 +58,7 @@ public:
 
     void readInputs()
     {
-        ifstream file( "input_raghu3.txt", ios::in );
+        ifstream file( "input_raghu4.txt", ios::in );
 
         file >> mPlayType;
 
@@ -324,6 +324,7 @@ public:
             }
             else if( mHalmaBoard[row][col] != '.' && depth == 1 )
             {
+                mVisited[row][col] = 0;
                 moveDown(row, col, depth+1, path);
             }
             else if( mHalmaBoard[row][col] == '.' && depth == 2 )
@@ -354,6 +355,7 @@ public:
             }
             else if(mHalmaBoard[row][col] != '.' && depth == 1)
             {
+                mVisited[row][col] = 0;
                 moveDownNeigh(row+1, col, 2, path);
             }
             else if(mHalmaBoard[row][col] == '.' && depth == 2)
@@ -390,6 +392,7 @@ public:
             }
             else if( mHalmaBoard[row][col] != '.' && depth == 1 )
             {
+                mVisited[row][col] = 0;
                 moveUp(row, col, depth+1, path);
             }
             else if( mHalmaBoard[row][col] == '.' && depth == 2 )
@@ -419,6 +422,7 @@ public:
             }
             else if(mHalmaBoard[row][col] != '.' && depth == 1)
             {
+                mVisited[row][col] = 0;
                 moveUpNeigh(row-1, col, 2, path);
             }
             else if(mHalmaBoard[row][col] == '.' && depth == 2)
@@ -454,6 +458,7 @@ public:
             }
             else if( mHalmaBoard[row][col] != '.' && depth == 1 )
             {
+                mVisited[row][col] = 0;
                 moveEast(row, col, depth+1, path);
             }
             else if( mHalmaBoard[row][col] == '.' && depth == 2 )
@@ -483,6 +488,7 @@ public:
             }
             else if(mHalmaBoard[row][col] != '.' && depth == 1)
             {
+                mVisited[row][col] = 0;
                 moveEastNeigh(row, col+1, 2, path);
             }
             else if(mHalmaBoard[row][col] == '.' && depth == 2)
@@ -518,6 +524,7 @@ public:
             }
             else if( mHalmaBoard[row][col] != '.' && depth == 1 )
             {
+                mVisited[row][col] = 0;
                 moveWest(row, col, depth+1, path);
             }
             else if( mHalmaBoard[row][col] == '.' && depth == 2 )
@@ -548,6 +555,7 @@ public:
             }
             else if(mHalmaBoard[row][col] != '.' && depth == 1)
             {
+                mVisited[row][col] = 0;
                 moveWestNeigh(row, col-1, 2, path);
             }
             else if(mHalmaBoard[row][col] == '.' && depth == 2)
@@ -584,6 +592,7 @@ public:
             }
             else if( mHalmaBoard[row][col] != '.' && depth == 1 )
             {
+                mVisited[row][col] = 0;
                 moveNE(row, col, depth+1, path);
             }
             else if( mHalmaBoard[row][col] == '.' && depth == 2 )
@@ -614,6 +623,7 @@ public:
             }
             else if(mHalmaBoard[row][col] != '.' && depth == 1)
             {
+                mVisited[row][col] = 0;
                 moveNENeigh(row-1, col+1, 2, path);
             }
             else if(mHalmaBoard[row][col] == '.' && depth == 2)
@@ -651,6 +661,7 @@ public:
             }
             else if( mHalmaBoard[row][col] != '.' && depth == 1 )
             {
+                mVisited[row][col] = 0;
                 moveNW(row, col, depth+1, path);
             }
             else if( mHalmaBoard[row][col] == '.' && depth == 2 )
@@ -681,6 +692,7 @@ public:
             }
             else if(mHalmaBoard[row][col] != '.' && depth == 1)
             {
+                mVisited[row][col] = 0;
                 moveNWNeigh(row-1, col-1, 2, path);
             }
             else if(mHalmaBoard[row][col] == '.' && depth == 2)
@@ -717,6 +729,7 @@ public:
             }
             else if( mHalmaBoard[row][col] != '.' && depth == 1 )
             {
+                mVisited[row][col] = 0;
                 moveSE(row, col, depth+1, path);
             }
             else if( mHalmaBoard[row][col] == '.' && depth == 2 )
@@ -746,6 +759,7 @@ public:
             }
             else if(mHalmaBoard[row][col] != '.' && depth == 1)
             {
+                mVisited[row][col] = 0;
                 moveSENeigh(row+1, col+1, 2, path);
             }
             else if(mHalmaBoard[row][col] == '.' && depth == 2)
@@ -782,6 +796,7 @@ public:
             }
             else if( mHalmaBoard[row][col] != '.' && depth == 1 )
             {
+                mVisited[row][col] = 0;
                 moveSW(row, col, depth+1, path);
             }
             else if( mHalmaBoard[row][col] == '.' && depth == 2 )
@@ -811,6 +826,7 @@ public:
             }
             else if(mHalmaBoard[row][col] != '.' && depth == 1)
             {
+                mVisited[row][col] = 0;
                 moveSWNeigh(row+1, col-1, 2, path);
             }
             else if(mHalmaBoard[row][col] == '.' && depth == 2)
@@ -1196,7 +1212,7 @@ int main()
 
 //    cout << "The left goal is:" << game.isLeftGoal() << endl;
 
-    game.findLegalMoves('W');
+    game.findLegalMoves('B');
 
 //    std::pair<int, std::pair<int, int>> ai_move = game.minimax_optimization('W', 0, LOSS, WIN);
 

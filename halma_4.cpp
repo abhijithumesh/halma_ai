@@ -13,7 +13,9 @@ using namespace std;
 
 typedef std::pair<int, int> xyCoordinates;
 typedef std::vector<xyCoordinates> pawnVector;
-typedef tuple<xyCoordinates, string, int> coordinate_dis; 
+typedef tuple<xyCoordinates, string, int> coordinate_dis;
+typedef tuple<int, xyCoordinates, xyCoordinates, string> miniMaxRet;
+typedef multimap<xyCoordinates, vector<coordinate_dis>> multimapResult;
 
 class HALMA{
 
@@ -58,7 +60,7 @@ public:
 
     void readInputs()
     {
-        ifstream file( "input_raghu3.txt", ios::in );
+        ifstream file( "input.txt", ios::in );
 
         file >> mPlayType;
 
@@ -256,9 +258,6 @@ public:
 
     void populatePawns()
     {
-        mWhitePawn.clear();
-        mBlackPawn.clear();
-
         for(int i = 0 ; i < 16; i++)
         {
             for(int j = 0 ; j < 16; j++)
@@ -873,12 +872,19 @@ public:
     void findLegalMoves(char turn)
     {
         int row, col;
+        cout << __func__ <<endl;
+
+        //Get the state of white pawns and black pawns
+        populatePawns();
+
+        //Show the state of the board.
+        showInputs();
+
+        // Legal Moves source and destination
+        multimap<xyCoordinates, xyCoordinates> legalMoves;
 
         if(turn == 'W')
         {
-            cout << __func__ <<endl;
-            populatePawns();
-
             for(auto itr = mWhitePawn.begin(); itr != mWhitePawn.end(); itr++)
             {
                 row = itr->first;
@@ -889,54 +895,10 @@ public:
                 setSource(*itr);
                 searchNeighbors(row, col);
             }
-            multimap<xyCoordinates, xyCoordinates> legalMoves;
-
-            for(auto itr = mResult.begin(); itr != mResult.end(); itr++)
-            {
-                xyCoordinates xyValue = itr->first;
-
-                vector<coordinate_dis> vecList = itr->second;
-
-                cout << "The source X: " << xyValue.first << " and Y: " << xyValue.second <<"\n";
-
-                cout << "The destination nodes are: \n";
-
-                for(auto vec = vecList.begin(); vec != vecList.end(); vec++)
-                {
-                    xyCoordinates XY = get<0>(*vec);
-                    string destPath = get<1>(*vec);
-                    int eucledianDis = get<2>(*vec);
-
-                    cout<< "X:" << XY.first << "Y:" << XY.second << "\n";
-
-                    cout << "The string to destination is:" << destPath << "\n";
-
-                    cout << "The eucledian distance is:" << eucledianDis << "\n";
-                
-                    legalMoves.insert(std::pair<xyCoordinates, xyCoordinates>(xyValue, XY));
-                }
-            
-            }
-
-#if 0
-            for(auto itr = legalMoves.begin(); itr!= legalMoves.end(); itr++)
-            {
-                xyCoordinates xyValue = itr->first;
-
-                xyCoordinates xy1 = itr->second;
-
-                cout << "X: " << xyValue.first << " Y: " << xyValue.second << "::";
-                cout << "X: " << xy1.first << "Y: " << xy1.second <<"\n";
-            }
-
-#endif
 
         }
         else
         {
-            cout << __func__ <<endl;
-            populatePawns();
-
             for(auto itr = mBlackPawn.begin(); itr != mBlackPawn.end(); itr++)
             {
                 row = itr->first;
@@ -947,188 +909,147 @@ public:
                 setSource(*itr);
                 searchNeighbors(row, col);
             }
-
-            multimap<xyCoordinates, xyCoordinates> legalMoves;
-
-            for(auto itr = mResult.begin(); itr != mResult.end(); itr++)
-            {
-                xyCoordinates xyValue = itr->first;
-
-                vector<coordinate_dis> vecList = itr->second;
-
-                cout << "The source X: " << xyValue.first << " and Y: " << xyValue.second <<"\n";
-
-                cout << "The destination nodes are: \n";
-
-                for(auto vec = vecList.begin(); vec != vecList.end(); vec++)
-                {
-                    xyCoordinates XY = get<0>(*vec);
-                    string destPath = get<1>(*vec);
-                    int eucledianDis = get<2>(*vec);
-
-                    cout<< "X:" << XY.first << "Y:" << XY.second << "\n";
-
-                    cout << "The string to destination is:" << destPath << "\n";
-
-                    cout << "The eucledian distance is:" << eucledianDis << "\n";
-                
-                    legalMoves.insert(std::pair<xyCoordinates, xyCoordinates>(xyValue, XY));
-                }
-            
-            }           
+                        
         }
-    }
-
-
-    int max(int x1, int y1, int x2, int y2)
-    {
-        int diff1 = x1 - x2;
-        int diff2 = y1 - y2;
-
-        diff1 = abs(diff1);
-        diff2 = abs(diff2);
-
-        return (diff1 > diff2) ? diff1 : diff2;
-    }
-
-    std::pair<int, std::pair<int, int>> evaluationFunction()
-    {
-        multimap<xyCoordinates, vector<coordinate_dis>> _result = mResult;
-
-        multimap<xyCoordinates, xyCoordinates> legalMoves;
-
-        for(auto itr = _result.begin(); itr != _result.end(); itr++)
+#if 0
+        for(auto itr = mResult.begin(); itr != mResult.end(); itr++)
         {
             xyCoordinates xyValue = itr->first;
 
             vector<coordinate_dis> vecList = itr->second;
 
+            cout << "The source X: " << xyValue.first << " and Y: " << xyValue.second <<"\n";
+
+            cout << "The destination nodes are: \n";
+
             for(auto vec = vecList.begin(); vec != vecList.end(); vec++)
             {
                 xyCoordinates XY = get<0>(*vec);
+                string destPath = get<1>(*vec);
+                int eucledianDis = get<2>(*vec);
 
-                legalMoves.insert(std::pair<xyCoordinates, xyCoordinates>(xyValue, XY));
+                cout<< "X:" << XY.first << "Y:" << XY.second << "\n";
 
-            }
+                cout << "The string to destination is:" << destPath << "\n";
 
-        }
-
-        int maxValue = LOSS;
-        std::pair<int, int> bestMove = std::make_pair(-1, -1);
+                cout << "The eucledian distance is:" << eucledianDis << "\n";
         
-        for(auto itr = legalMoves.begin(); itr != legalMoves.end(); itr++)
-        {
-            if(getMyPawnChar() == 'W')
-            {
-                xyCoordinates nextMove = itr->second;
-                
-                int x1 = nextMove.first;
-                int y1 = nextMove.second;
-
-                int dmax = max(x1, y1, 0, 0);
-
-                int value = WIN - dmax * 10;
-
-                if(maxValue < value)
-                {
-                    maxValue = value;
-                    bestMove = nextMove;
-                }
+                legalMoves.insert(std::pair<xyCoordinates, xyCoordinates>(xyValue, XY));
             }
-            if(getMyPawnChar() == 'B')
-            {
-                xyCoordinates nextMove = itr->second;
-                
-                int x1 = nextMove.first;
-                int y1 = nextMove.second;
-
-                int dmax = max(x1, y1, 15, 15);
-
-                int value = WIN - dmax * 10;
-
-                if(maxValue < value)
-                {
-                    maxValue = value;
-                    bestMove = nextMove;
-                }
-            }
-
+        
         }
 
-        return std::make_pair(maxValue, bestMove);
+        for(auto itr = legalMoves.begin(); itr!= legalMoves.end(); itr++)
+        {
+            xyCoordinates xyValue = itr->first;
+
+            xyCoordinates xy1 = itr->second;
+
+            cout << "X: " << xyValue.first << " Y: " << xyValue.second << "::";
+            cout << "X: " << xy1.first << "Y: " << xy1.second <<"\n";
+        }
+
+#endif
 
     }
 
-    // Apply the minimax game optimization algorithm
-    std::pair<int, std::pair<int, int>> minimax_optimization(char marker, int depth, int alpha, int beta)
+
+    miniMaxRet evaluationFunction(char marker)
     {
-        //Initialize the best move
-        std::pair<int, int> best_move = std::make_pair(-1, -1);
-        int best_score = (marker == getMyPawnChar()) ? LOSS : WIN;
-
-        if(depth == 2)
-        {
-            findLegalMoves(marker);
-            return evaluationFunction();
-        }
-
-        if( isRightGoal(mHalmaBoard) )
-        {
-            if(marker == 'B')
-                return std::make_pair(WIN, best_move);
-            else
-                return std::make_pair(LOSS, best_move);
-        }
-
-        if( isLeftGoal(mHalmaBoard) )
-        {
-            if(marker == 'W')
-                return std::make_pair(WIN, best_move);
-            else
-                return std::make_pair(LOSS, best_move);
-        }
-
         findLegalMoves(marker);
 
         multimap<xyCoordinates, vector<coordinate_dis>> _result = mResult;
 
+
+    
+        
+    
+    
+    }
+
+    // Apply the minimax game optimization algorithm
+    miniMaxRet minimax_optimization(char marker, int depth, int alpha, int beta)
+    {
+
+        if( depth == 0)
+        {
+            // stores the result in mResult.
+            return evaluationFunction(marker);
+        
+        }
+
+        int best_score = (marker == getMyPawnChar()) ? LOSS : WIN;
+
+
+        if( isRightGoal(mHalmaBoard) )
+        {
+            if(marker == 'B')
+                return std::make_tuple( WIN, make_pair(-1, -1), make_pair(-1, -1), "" );
+            else
+                return std::make_tuple( LOSS, make_pair(-1, -1), make_pair(-1, -1), "" );
+        }
+
+
+        if( isLeftGoal(mHalmaBoard) )
+        {
+            if(marker == 'W')
+                return std::make_tuple( WIN, make_pair(-1, -1), make_pair(-1, -1), "" );
+            else
+                return std::make_tuple( LOSS, make_pair(-1, -1), make_pair(-1, -1), "" );
+
+        }
+
+        mResult.clear();
+
+        // stores the result in mResult.
+        findLegalMoves(marker);
+
+        // save the state of the result before going to change it.
+        multimapResult _result = mResult;
+
+        mResult.clear();
+
+        // set of all legal moves for 19 pawns.
         multimap<xyCoordinates, xyCoordinates> legalMoves;
 
         for(auto itr = _result.begin(); itr != _result.end(); itr++)
         {
+            // getting the source node where the pawn in currently
             xyCoordinates xyValue = itr->first;
 
             vector<coordinate_dis> vecList = itr->second;
 
             for(auto vec = vecList.begin(); vec != vecList.end(); vec++)
             {
+                //set of all XY coordinates where the pawn can move.
                 xyCoordinates XY = get<0>(*vec);
 
                 legalMoves.insert(std::pair<xyCoordinates, xyCoordinates>(xyValue, XY));
-
             }
 
         }
 
         for(auto itr = legalMoves.begin(); itr != legalMoves.end(); itr++)
         {
+            // get the source
             xyCoordinates currPos = itr->first;
+
+            // get the destination
             xyCoordinates nextMove = itr->second;
 
+            // Move the pawn from current state to next state.
             mHalmaBoard[currPos.first][currPos.second] = '.';
-
             mHalmaBoard[nextMove.first][nextMove.second] = marker;
 
-            // Maximizing player's turn
-            if( marker == getMyPawnChar())
+            // Maximizing agent
+            if( marker == getMyPawnChar() )
             {
-                char opponent = (marker == 'W') ? 'B' : 'W'; 
-                
-                int score = minimax_optimization( opponent, depth + 1, alpha, beta).first;
+                char opponent = (marker == 'W') ? 'B' : 'W';
+                miniMaxRet ret = minimax_optimization( opponent, depth + 1, alpha, beta);
+                int score = get<0>(*ret);
 
-                if( best_score <= score )
+                if( best_score < score )
                 {
-                    // TODO change.
                     best_score = score - depth * 10;
                     best_move = nextMove;
 
@@ -1137,22 +1058,24 @@ public:
                     mHalmaBoard[currPos.first][currPos.second] = marker;
                     mHalmaBoard[nextMove.first][nextMove.second] = '.';
 
-                    if(beta <= alpha)
+
+                    if( beta <= alpha )
                     {
                         break;
                     }
                 }
-            } // Minimizing opponent's turn
-            else
+            }
+            else // Minimizing opponent's turn
             {
+                
                 char opponent = (marker == 'W') ? 'B' : 'W';
-
-                int score = minimax_optimization( opponent, depth +1, alpha, beta).first;
-
-                if(best_score >= score)
+                miniMaxRet ret = minimax_optimization( opponent, depth + 1, alpha, beta);
+            
+                int score = get<0>(*ret);
+                
+                if( best_score > score )
                 {
                     best_score = score + depth * 10;
-
                     best_move = nextMove;
 
                     beta = std::min(beta, best_score);
@@ -1160,17 +1083,17 @@ public:
                     mHalmaBoard[currPos.first][currPos.second] = marker;
                     mHalmaBoard[nextMove.first][nextMove.second] = '.';
 
-                    if(beta <= alpha)
+
+                    if( beta <= alpha )
                     {
                         break;
                     }
-                
                 }
-            }
 
+            }
             mHalmaBoard[currPos.first][currPos.second] = marker;
             mHalmaBoard[nextMove.first][nextMove.second] = '.';
-            
+
         }
         
         return std::make_pair(best_score, best_move);
@@ -1192,17 +1115,11 @@ int main()
 
     game.showInputs();
 
-//    cout << "The right goal is: " << game.isRightGoal() << endl;
+    std::pair<int, std::pair<int, int>> ai_move = game.minimax_optimization('W', 0, LOSS, WIN);
 
-//    cout << "The left goal is:" << game.isLeftGoal() << endl;
+    cout << "Abhi!!!" << "\n\n\n";
 
-    game.findLegalMoves('W');
-
-//    std::pair<int, std::pair<int, int>> ai_move = game.minimax_optimization('W', 0, LOSS, WIN);
-
-//    cout << "Abhi!!!" << "\n\n\n";
-
-//    cout << "X: " << ai_move.second.first << " Y: " << ai_move.second.second << "\n";
+    cout << "X: " << ai_move.second.first << " Y: " << ai_move.second.second << "\n";
 
 
     return 0;
