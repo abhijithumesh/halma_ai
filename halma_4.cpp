@@ -4,6 +4,8 @@
 #include <fstream>
 #include <vector>
 #include <tuple>
+#include <climits>
+#include <numeric>
 
 #define WIN 1500
 #define DRAW 0
@@ -60,7 +62,7 @@ public:
 
     void readInputs()
     {
-        ifstream file( "input.txt", ios::in );
+        ifstream file( "input_raghu4.txt", ios::in );
 
         file >> mPlayType;
 
@@ -76,6 +78,12 @@ public:
             }
         
         }
+    }
+
+
+    void populateDesiredWBPos()
+    {
+    
     }
 
     void showInputs()
@@ -258,6 +266,9 @@ public:
 
     void populatePawns()
     {
+        mWhitePawn.clear();
+        mBlackPawn.clear();
+
         for(int i = 0 ; i < 16; i++)
         {
             for(int j = 0 ; j < 16; j++)
@@ -285,7 +296,7 @@ public:
 
     void findNeighbors(int row, int col, string path)
     {
-        cout << __func__ <<"row:" << row << "col:" << col <<endl;
+        //cout << __func__ <<"row:" << row << "col:" << col <<endl;
         moveDownNeigh(row+1, col, 1, path);
         
         moveUpNeigh(row-1, col, 1, path);
@@ -308,7 +319,7 @@ public:
         row = row + 1 ;
         if(isValidCell(row,col) && !mVisited[row][col])
         {
-            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            //cout << __func__ <<"row:" << row << "col:" << col <<endl;
             mVisited[row][col] = 1;
             if( mHalmaBoard[row][col] == '.' && depth == 1 )
             {
@@ -323,6 +334,7 @@ public:
             }
             else if( mHalmaBoard[row][col] != '.' && depth == 1 )
             {
+                mVisited[row][col] = 0;
                 moveDown(row, col, depth+1, path);
             }
             else if( mHalmaBoard[row][col] == '.' && depth == 2 )
@@ -345,7 +357,7 @@ public:
     {
         if(isValidCell(row,col) && !mVisited[row][col])
         {
-            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            //cout << __func__ <<"row:" << row << "col:" << col <<endl;
             mVisited[row][col] = 1;
             if(mHalmaBoard[row][col] == '.' && depth == 1)
             {
@@ -353,6 +365,7 @@ public:
             }
             else if(mHalmaBoard[row][col] != '.' && depth == 1)
             {
+                mVisited[row][col] = 0;
                 moveDownNeigh(row+1, col, 2, path);
             }
             else if(mHalmaBoard[row][col] == '.' && depth == 2)
@@ -374,7 +387,7 @@ public:
         row = row - 1 ;
         if(isValidCell(row,col) && !mVisited[row][col])
         {
-            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            //cout << __func__ <<"row:" << row << "col:" << col <<endl;
             mVisited[row][col] = 1;
             if( mHalmaBoard[row][col] == '.' && depth == 1 )
             {
@@ -389,6 +402,7 @@ public:
             }
             else if( mHalmaBoard[row][col] != '.' && depth == 1 )
             {
+                mVisited[row][col] = 0;
                 moveUp(row, col, depth+1, path);
             }
             else if( mHalmaBoard[row][col] == '.' && depth == 2 )
@@ -410,7 +424,7 @@ public:
     {
         if(isValidCell(row,col) && !mVisited[row][col])
         {
-            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            //cout << __func__ <<"row:" << row << "col:" << col <<endl;
             mVisited[row][col] = 1;
             if(mHalmaBoard[row][col] == '.' && depth == 1)
             {
@@ -418,6 +432,7 @@ public:
             }
             else if(mHalmaBoard[row][col] != '.' && depth == 1)
             {
+                mVisited[row][col] = 0;
                 moveUpNeigh(row-1, col, 2, path);
             }
             else if(mHalmaBoard[row][col] == '.' && depth == 2)
@@ -438,7 +453,7 @@ public:
         col = col + 1;
         if(isValidCell(row,col) && !mVisited[row][col])
         {
-            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            //cout << __func__ <<"row:" << row << "col:" << col <<endl;
             mVisited[row][col] = 1;
             if( mHalmaBoard[row][col] == '.' && depth == 1 )
             {
@@ -453,6 +468,7 @@ public:
             }
             else if( mHalmaBoard[row][col] != '.' && depth == 1 )
             {
+                mVisited[row][col] = 0;
                 moveEast(row, col, depth+1, path);
             }
             else if( mHalmaBoard[row][col] == '.' && depth == 2 )
@@ -474,7 +490,7 @@ public:
     {
         if(isValidCell(row,col) && !mVisited[row][col])
         {
-            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            //cout << __func__ <<"row:" << row << "col:" << col <<endl;
             mVisited[row][col] = 1;
             if(mHalmaBoard[row][col] == '.' && depth == 1)
             {
@@ -482,6 +498,7 @@ public:
             }
             else if(mHalmaBoard[row][col] != '.' && depth == 1)
             {
+                mVisited[row][col] = 0;
                 moveEastNeigh(row, col+1, 2, path);
             }
             else if(mHalmaBoard[row][col] == '.' && depth == 2)
@@ -502,7 +519,7 @@ public:
         col = col - 1;
         if(isValidCell(row,col) && !mVisited[row][col])
         {
-            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            //cout << __func__ <<"row:" << row << "col:" << col <<endl;
             mVisited[row][col] = 1;
             if( mHalmaBoard[row][col] == '.' && depth == 1 )
             {
@@ -517,6 +534,7 @@ public:
             }
             else if( mHalmaBoard[row][col] != '.' && depth == 1 )
             {
+                mVisited[row][col] = 0;
                 moveWest(row, col, depth+1, path);
             }
             else if( mHalmaBoard[row][col] == '.' && depth == 2 )
@@ -539,7 +557,7 @@ public:
     {
         if(isValidCell(row,col) && !mVisited[row][col])
         {
-            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            //cout << __func__ <<"row:" << row << "col:" << col <<endl;
             mVisited[row][col] = 1;
             if(mHalmaBoard[row][col] == '.' && depth == 1)
             {
@@ -547,6 +565,7 @@ public:
             }
             else if(mHalmaBoard[row][col] != '.' && depth == 1)
             {
+                mVisited[row][col] = 0;
                 moveWestNeigh(row, col-1, 2, path);
             }
             else if(mHalmaBoard[row][col] == '.' && depth == 2)
@@ -568,7 +587,7 @@ public:
         row = row - 1;
         if(isValidCell(row,col) && !mVisited[row][col])
         {
-            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            //cout << __func__ <<"row:" << row << "col:" << col <<endl;
             mVisited[row][col] = 1;
             if( mHalmaBoard[row][col] == '.' && depth == 1 )
             {
@@ -583,6 +602,7 @@ public:
             }
             else if( mHalmaBoard[row][col] != '.' && depth == 1 )
             {
+                mVisited[row][col] = 0;
                 moveNE(row, col, depth+1, path);
             }
             else if( mHalmaBoard[row][col] == '.' && depth == 2 )
@@ -605,7 +625,7 @@ public:
     {
         if(isValidCell(row,col) && !mVisited[row][col])
         {
-            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            //cout << __func__ <<"row:" << row << "col:" << col <<endl;
             mVisited[row][col] = 1;
             if(mHalmaBoard[row][col] == '.' && depth == 1)
             {
@@ -613,6 +633,7 @@ public:
             }
             else if(mHalmaBoard[row][col] != '.' && depth == 1)
             {
+                mVisited[row][col] = 0;
                 moveNENeigh(row-1, col+1, 2, path);
             }
             else if(mHalmaBoard[row][col] == '.' && depth == 2)
@@ -635,7 +656,7 @@ public:
         row = row - 1;
         if(isValidCell(row,col) && !mVisited[row][col])
         {
-            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            //cout << __func__ <<"row:" << row << "col:" << col <<endl;
             mVisited[row][col] = 1;
             if( mHalmaBoard[row][col] == '.' && depth == 1 )
             {
@@ -650,6 +671,7 @@ public:
             }
             else if( mHalmaBoard[row][col] != '.' && depth == 1 )
             {
+                mVisited[row][col] = 0;
                 moveNW(row, col, depth+1, path);
             }
             else if( mHalmaBoard[row][col] == '.' && depth == 2 )
@@ -672,7 +694,7 @@ public:
     {
         if(isValidCell(row,col) && !mVisited[row][col])
         {
-            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            //cout << __func__ <<"row:" << row << "col:" << col <<endl;
             mVisited[row][col] = 1;
             if(mHalmaBoard[row][col] == '.' && depth == 1)
             {
@@ -680,6 +702,7 @@ public:
             }
             else if(mHalmaBoard[row][col] != '.' && depth == 1)
             {
+                mVisited[row][col] = 0;
                 moveNWNeigh(row-1, col-1, 2, path);
             }
             else if(mHalmaBoard[row][col] == '.' && depth == 2)
@@ -701,7 +724,7 @@ public:
         row = row + 1;
         if(isValidCell(row,col) && !mVisited[row][col])
         {
-            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            //cout << __func__ <<"row:" << row << "col:" << col <<endl;
             mVisited[row][col] = 1;
             if( mHalmaBoard[row][col] == '.' && depth == 1 )
             {
@@ -716,6 +739,7 @@ public:
             }
             else if( mHalmaBoard[row][col] != '.' && depth == 1 )
             {
+                mVisited[row][col] = 0;
                 moveSE(row, col, depth+1, path);
             }
             else if( mHalmaBoard[row][col] == '.' && depth == 2 )
@@ -737,7 +761,7 @@ public:
     {
         if(isValidCell(row,col) && !mVisited[row][col])
         {
-            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            //cout << __func__ <<"row:" << row << "col:" << col <<endl;
             mVisited[row][col] = 1;
             if(mHalmaBoard[row][col] == '.' && depth == 1)
             {
@@ -745,6 +769,7 @@ public:
             }
             else if(mHalmaBoard[row][col] != '.' && depth == 1)
             {
+                mVisited[row][col] = 0;
                 moveSENeigh(row+1, col+1, 2, path);
             }
             else if(mHalmaBoard[row][col] == '.' && depth == 2)
@@ -766,7 +791,7 @@ public:
         row = row + 1;
         if(isValidCell(row,col) && !mVisited[row][col])
         {
-            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            //cout << __func__ <<"row:" << row << "col:" << col <<endl;
             mVisited[row][col] = 1;
             if( mHalmaBoard[row][col] == '.' && depth == 1 )
             {
@@ -781,6 +806,7 @@ public:
             }
             else if( mHalmaBoard[row][col] != '.' && depth == 1 )
             {
+                mVisited[row][col] = 0;
                 moveSW(row, col, depth+1, path);
             }
             else if( mHalmaBoard[row][col] == '.' && depth == 2 )
@@ -802,7 +828,7 @@ public:
     {
         if(isValidCell(row,col) && !mVisited[row][col])
         {
-            cout << __func__ <<"row:" << row << "col:" << col <<endl;
+            //cout << __func__ <<"row:" << row << "col:" << col <<endl;
             mVisited[row][col] = 1;
             if(mHalmaBoard[row][col] == '.' && depth == 1)
             {
@@ -810,6 +836,7 @@ public:
             }
             else if(mHalmaBoard[row][col] != '.' && depth == 1)
             {
+                mVisited[row][col] = 0;
                 moveSWNeigh(row+1, col-1, 2, path);
             }
             else if(mHalmaBoard[row][col] == '.' && depth == 2)
@@ -872,13 +899,15 @@ public:
     void findLegalMoves(char turn)
     {
         int row, col;
-        cout << __func__ <<endl;
+        //cout << __func__ <<endl;
 
         //Get the state of white pawns and black pawns
         populatePawns();
 
         //Show the state of the board.
-        showInputs();
+        //showInputs();
+
+        mResult.clear();
 
         // Legal Moves source and destination
         multimap<xyCoordinates, xyCoordinates> legalMoves;
@@ -890,7 +919,7 @@ public:
                 row = itr->first;
                 col = itr->second;
 
-                cout << __func__ << "row:" << row << " col:" << col << endl;
+                //cout << __func__ << "row:" << row << " col:" << col << endl;
 
                 setSource(*itr);
                 searchNeighbors(row, col);
@@ -904,14 +933,19 @@ public:
                 row = itr->first;
                 col = itr->second;
 
-                cout << __func__ << "row:" << row << " col:" << col << endl;
+                //cout << __func__ << "row:" << row << " col:" << col << endl;
 
                 setSource(*itr);
                 searchNeighbors(row, col);
             }
                         
         }
+
 #if 0
+        cout << __func__ << "   mResult.size()" << mResult.size() <<endl;
+
+        if ( turn == 'B')
+        {
         for(auto itr = mResult.begin(); itr != mResult.end(); itr++)
         {
             xyCoordinates xyValue = itr->first;
@@ -938,7 +972,9 @@ public:
             }
         
         }
-
+        }
+#endif
+#if 0
         for(auto itr = legalMoves.begin(); itr!= legalMoves.end(); itr++)
         {
             xyCoordinates xyValue = itr->first;
@@ -956,55 +992,10 @@ public:
 
     miniMaxRet evaluationFunction(char marker)
     {
+    //    cout << "Evaluating" << "\n" ;
+#if 0
         findLegalMoves(marker);
 
-        multimap<xyCoordinates, vector<coordinate_dis>> _result = mResult;
-
-
-    
-        
-    
-    
-    }
-
-    // Apply the minimax game optimization algorithm
-    miniMaxRet minimax_optimization(char marker, int depth, int alpha, int beta)
-    {
-
-        if( depth == 0)
-        {
-            // stores the result in mResult.
-            return evaluationFunction(marker);
-        
-        }
-
-        int best_score = (marker == getMyPawnChar()) ? LOSS : WIN;
-
-
-        if( isRightGoal(mHalmaBoard) )
-        {
-            if(marker == 'B')
-                return std::make_tuple( WIN, make_pair(-1, -1), make_pair(-1, -1), "" );
-            else
-                return std::make_tuple( LOSS, make_pair(-1, -1), make_pair(-1, -1), "" );
-        }
-
-
-        if( isLeftGoal(mHalmaBoard) )
-        {
-            if(marker == 'W')
-                return std::make_tuple( WIN, make_pair(-1, -1), make_pair(-1, -1), "" );
-            else
-                return std::make_tuple( LOSS, make_pair(-1, -1), make_pair(-1, -1), "" );
-
-        }
-
-        mResult.clear();
-
-        // stores the result in mResult.
-        findLegalMoves(marker);
-
-        // save the state of the result before going to change it.
         multimapResult _result = mResult;
 
         mResult.clear();
@@ -1041,42 +1032,279 @@ public:
             mHalmaBoard[currPos.first][currPos.second] = '.';
             mHalmaBoard[nextMove.first][nextMove.second] = marker;
 
+            if( isRightGoal(mHalmaBoard) )
+            {
+                mHalmaBoard[currPos.first][currPos.second] = marker;
+                mHalmaBoard[nextMove.first][nextMove.second] = '.';
+
+                if(getMyPawnChar() == 'B')
+                    return std::make_tuple( INT_MAX, currPos, nextMove, "" );
+                else
+                    return std::make_tuple( INT_MIN, currPos, nextMove, "" );
+            }
+
+            if( isLeftGoal(mHalmaBoard) )
+            {
+                mHalmaBoard[currPos.first][currPos.second] = marker;
+                mHalmaBoard[nextMove.first][nextMove.second] = '.';
+
+                if(getMyPawnChar() == 'W')
+                    return std::make_tuple( INT_MAX, currPos, nextMove, "" );
+                else
+                    return std::make_tuple( INT_MIN, currPos, nextMove, "" );
+
+            }
+
+            int value = call_utility();
+            mHalmaBoard[currPos.first][currPos.second] = marker;
+            mHalmaBoard[nextMove.first][nextMove.second] = '.';
+
+            
+
+        }
+#endif
+        int value = 0;
+
+        for(int i = 0; i < 16; i++ )
+        {
+            for(int j = 0; j < 16; j++)
+            {
+                char ch = mHalmaBoard[j][i];
+
+                if( ch == 'B' )
+                {
+                    for( auto itr = mWhiteGoal.begin(); itr != mWhiteGoal.end(); itr++)
+                    {
+                        vector<int> distances;
+
+                        int X = itr -> first;
+                        int Y = itr -> second;
+
+                        if(mHalmaBoard[X][Y] != '.')
+                            continue;
+
+                        distances.push_back(diagonalDistance(j, i, X, Y));
+
+                        int max_value = *max_element(distances.begin(), distances.end());
+                        value -= max_value;
+                    
+                    }
+                
+                }
+                else if( ch == 'W' )
+                {
+                    for( auto itr = mBlackGoal.begin(); itr != mBlackGoal.end(); itr++)
+                    {
+                        vector<int> distances;
+
+                        int X = itr -> first;
+                        int Y = itr -> second;
+
+                        if(mHalmaBoard[X][Y] != '.')
+                            continue;
+
+                        distances.push_back(diagonalDistance(j, i, X, Y));
+
+                        int max_value = *max_element(distances.begin(), distances.end());
+                        value += max_value;
+                    
+                    }
+                
+                }
+            
+            }
+
+        }
+
+        if(marker == 'W')
+        {
+            value  = value * -1;
+        }
+
+
+        //cout << "Value:" << value << endl;
+        return std::make_tuple( value, make_pair(-1, -1), make_pair(-1, -1), "" );
+#if 0
+        int value = 0;
+
+        vector<int> distances;
+
+        for(int i = 0; i < 16; i++ )
+        {
+            for(int j = 0; j < 16; j++)
+            {
+                char ch = mHalmaBoard[j][i];
+
+                if( ch == marker && marker == 'W' )
+                {
+                    for( auto itr = mWhiteGoal.begin(); itr != mWhiteGoal.end(); itr++)
+                    {
+
+                        int X = itr -> first;
+                        int Y = itr -> second;
+
+                        if(mHalmaBoard[X][Y] != '.')
+                            continue;
+
+                        distances.push_back(diagonalDistance(j, i, X, Y));
+
+                    }
+                
+                }
+                
+                if( ch == marker && marker == 'B' )
+                {
+                    for( auto itr = mBlackGoal.begin(); itr != mBlackGoal.end(); itr++)
+                    {
+
+                        int X = itr -> first;
+                        int Y = itr -> second;
+
+                        if(mHalmaBoard[X][Y] != '.')
+                            continue;
+
+                        distances.push_back(diagonalDistance(j, i, X, Y));
+
+                    }
+                
+                }
+
+            }
+        }
+
+        value = accumulate(distances.begin(), distances.end(), 0);
+    
+        if( marker == 'B')
+        {
+            value = value * 1;
+        }
+        else
+            value = value * -1;
+
+
+        cout << "Value:" << value << endl;
+        return std::make_tuple( value, make_pair(-1, -1), make_pair(-1, -1), "" );
+#endif
+         
+    }
+
+    // Apply the minimax game optimization algorithm
+    miniMaxRet minimax_optimization(char marker, int depth, int alpha, int beta)
+    {
+        std::pair<int, int> best_move = std::make_pair(-1, -1);
+        std::pair<int, int> curr_move = std::make_pair(-1, -1);
+        int best_score = (marker == getMyPawnChar()) ? INT_MIN : INT_MAX; 
+
+
+        if( isRightGoal(mHalmaBoard) )
+        {
+            if(getMyPawnChar() == 'B')
+                return std::make_tuple( INT_MAX, make_pair(-1, -1), make_pair(-1, -1), "" );
+            else
+                return std::make_tuple( INT_MIN, make_pair(-1, -1), make_pair(-1, -1), "" );
+        }
+
+
+        if( isLeftGoal(mHalmaBoard) )
+        {
+            if(getMyPawnChar() == 'W')
+                return std::make_tuple( INT_MAX, make_pair(-1, -1), make_pair(-1, -1), "" );
+            else
+                return std::make_tuple( INT_MIN, make_pair(-1, -1), make_pair(-1, -1), "" );
+        }
+
+        mResult.clear();
+
+        if( depth == 3 )
+        {
+            return evaluationFunction(marker);
+        }
+
+        // stores the result in mResult.
+        findLegalMoves(marker);
+
+        // save the state of the result before going to change it.
+        multimapResult _result = mResult;
+
+        mResult.clear();
+
+        // set of all legal moves for 19 pawns.
+        multimap<xyCoordinates, xyCoordinates> legalMoves;
+
+        for(auto itr = _result.begin(); itr != _result.end(); itr++)
+        {
+            // getting the source node where the pawn in currently
+            xyCoordinates xyValue = itr->first;
+
+            vector<coordinate_dis> vecList = itr->second;
+
+            for(auto vec = vecList.begin(); vec != vecList.end(); vec++)
+            {
+                //set of all XY coordinates where the pawn can move.
+                xyCoordinates XY = get<0>(*vec);
+
+                // Source and destination pairs.    
+                legalMoves.insert(std::pair<xyCoordinates, xyCoordinates>(xyValue, XY));
+            }
+
+        }
+
+        for(auto itr = legalMoves.begin(); itr != legalMoves.end(); itr++)
+        {
+            // get the source
+            xyCoordinates currPos = itr->first;
+
+            // get the destination
+            xyCoordinates nextMove = itr->second;
+
+            // Move the pawn from current state to next state.
+            mHalmaBoard[currPos.first][currPos.second] = '.';
+            mHalmaBoard[nextMove.first][nextMove.second] = marker;
+
             // Maximizing agent
             if( marker == getMyPawnChar() )
             {
+
+                //cout << "Maximising" << "\n" ;
                 char opponent = (marker == 'W') ? 'B' : 'W';
                 miniMaxRet ret = minimax_optimization( opponent, depth + 1, alpha, beta);
-                int score = get<0>(*ret);
+                int score = get<0>(ret);
 
-                if( best_score < score )
+               // cout << __func__ << " Maximizing Score:" <<score << "\n";
+
+                if( score > best_score )
                 {
-                    best_score = score - depth * 10;
+                    best_score = score;
                     best_move = nextMove;
+                    curr_move = currPos;
 
                     alpha = std::max(alpha, best_score);
 
                     mHalmaBoard[currPos.first][currPos.second] = marker;
                     mHalmaBoard[nextMove.first][nextMove.second] = '.';
 
-
                     if( beta <= alpha )
                     {
+                        //cout << "Hitting here 1." << "\n";
                         break;
                     }
                 }
             }
             else // Minimizing opponent's turn
             {
+                //cout << "Minimizing" << "\n" ;
                 
                 char opponent = (marker == 'W') ? 'B' : 'W';
                 miniMaxRet ret = minimax_optimization( opponent, depth + 1, alpha, beta);
-            
-                int score = get<0>(*ret);
+                int score = get<0>(ret);
+
+                //cout << __func__ << " Minimizing Score:" <<score ;
                 
-                if( best_score > score )
+                if( score < best_score )
                 {
-                    best_score = score + depth * 10;
+                    best_score = score;
                     best_move = nextMove;
+                    curr_move = currPos;
 
                     beta = std::min(beta, best_score);
 
@@ -1086,25 +1314,37 @@ public:
 
                     if( beta <= alpha )
                     {
+                        //cout << "Hitting here 2." << "\n";
                         break;
                     }
                 }
 
             }
+
             mHalmaBoard[currPos.first][currPos.second] = marker;
             mHalmaBoard[nextMove.first][nextMove.second] = '.';
 
         }
         
-        return std::make_pair(best_score, best_move);
+        return std::make_tuple( best_score, curr_move, best_move, "" );
     }
 
+    int diagonalDistance(int x1, int y1, int x2, int y2)
+    {
+       int diff1 = x1 - x2;
+       int diff2 = y1 - y2;
+
+       diff1 = abs(diff1);
+       diff2 = abs(diff2);
+
+       return (diff1 > diff2) ? diff1 : diff2;
+    
+    }
 
 };
 
 int main()
 {
-
     HALMA game;
 
     game.readInputs();
@@ -1115,12 +1355,17 @@ int main()
 
     game.showInputs();
 
-    std::pair<int, std::pair<int, int>> ai_move = game.minimax_optimization('W', 0, LOSS, WIN);
+    miniMaxRet ai_move = game.minimax_optimization('W', 0, INT_MIN, INT_MAX);
 
     cout << "Abhi!!!" << "\n\n\n";
 
-    cout << "X: " << ai_move.second.first << " Y: " << ai_move.second.second << "\n";
+    xyCoordinates src = get<1>(ai_move);
+    xyCoordinates dest = get<2>(ai_move);
 
+    cout << "Source X: " << src.first  << " Y: " << src.second << "\n";
+    cout << "Destination X: " << dest.first  << " Y: " << dest.second << "\n";
+
+    game.showInputs();
 
     return 0;
 }
