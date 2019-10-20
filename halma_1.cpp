@@ -1,11 +1,14 @@
-#include<stdio.h>
-#include<iostream>
-#include<map>
+#include <stdio.h>
+#include <iostream>
+#include <map>
 #include <fstream>
+#include <vector>
 
 using namespace std;
 
-
+typedef std::pair<int, int> xyCoordinates;
+typedef std::vector<xyCoordinates> pawnVector;
+typedef tuple<xyCoordinates, int> coordinate_dis; 
 
 class HALMA{
 
@@ -14,6 +17,9 @@ private:
     string mMyPawn;
     double mTimeRemaining;
     char mHalmaBoard[16][16];
+    pawnVector mWhitePawn;
+    pawnVector mBlackPawn;
+    int mVisited[16][16];
 
 public:
     HALMA()
@@ -25,9 +31,21 @@ public:
                 mHalmaBoard[i][j] = '.';
             }
         }
-    
+
     }
 
+    void resetVisited()
+    {
+        for(int i = 0; i < 16; i++)
+        {
+            for(int j = 0; j < 16; j++)
+            {
+                mVisited[i][j] = 0;
+            }
+
+        }
+    
+    }
 
     void readInputs()
     {
@@ -125,8 +143,244 @@ public:
         return true;
     }
 
-};
+    char getPawnChar()
+    {
+        return (mMyPawn == "WHITE")? 'W' : 'B';
+    }
 
+    void populatePawns()
+    {
+        for(int i = 0 ; i < 16; i++)
+        {
+            for(int j = 0 ; j < 16; j++)
+            {
+                if(mHalmaBoard[i][j] == 'W')
+                {
+                    mWhitePawn.push_back(std::make_pair(i,j));
+                }
+                else if(mHalmaBoard[i][j] == 'B')
+                {
+                    mBlackPawn.push_back(std::make_pair(i,j));
+                }
+            }   
+        }
+    }
+
+    bool isValidCell(int row, int col)
+    {
+        if( row < 0 || row >=16 || col < 0 || col >=16 )
+            return false;
+
+        return true;
+    }
+
+
+    void findNeighbors(int row, int col, vector<coordinate_dis>& vec)
+    {
+        moveUpNeigh(row+1, col, vec1, 1);
+        
+        moveDownNeigh(row-1, col, vec, 1);
+        
+        moveEastNeigh(row, col+1, vec, 1);
+
+        moveWestNeigh(row, col-1, vec, 1);
+        
+        moveNWNeigh(row-1, col-1, vec, 1);
+
+        moveNENeigh(row-1, col+1, vec, 1);
+        
+        moveSENeigh(row+1, col+1, vec, 1);
+
+        moveSWNeigh(row+1, col-1, vec, 1);
+    }
+
+    void moveUp(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>>& result, int depth, string path)
+    {
+        int newRow = row + 1;
+        
+        if(isValidCell(newRow,col) && !mVisited[newRow][col])
+        {
+            mVisited[newRow][col] = 1;
+            if( mHalmaBoard[newRow][col] == '.' && depth == 1 )
+            {
+                 path + " " + to_string(newRow)+"," + to_string(col);
+                xyCoordinates XY = std::make_pair(row,col);
+                vector<coordinate_dis> v;
+
+                v.push_back(make_tuple(std::make_pair(newRow, col), 0));
+
+                result.insert(std::pair<xyCoordinates, vector<coordinate_dis>>(XY, v));
+                return;
+            }
+            else if( mHalmaBoard[newRow][col] != '.' && depth == 1 )
+            {
+                moveUp(newRow, col, result, depth+1);
+            }
+            else if( mHalmaBoard[newRow][col] == '.' && depth == 2 )
+            {
+                /*vector<coordinate_dis> v;
+                v.push_back(make_tuple(std::make_pair(newRow, col), 0));
+                */
+                findNeighbors(newRow, col, v);
+            }
+            else if( mHalmaBoard[newRow][col] != '.' && depth == 2)
+            {
+                return;
+            }
+        }
+    
+    }
+
+    void moveUpNeigh(int row, int col, vector<coordinate_dis> res, int depth)
+    {
+        if(isValidCell(row,col) && !mVisited[row][col])
+        {
+            if(mHalmaBoard[row][col] == '.' && depth == 1)
+            {
+                return;
+            }
+            else if(mHalmaBoard[row][col] != '.' && depth == 1)
+            {
+                moveUpNeigh(row, col, res, 2);
+            }
+            else if(mHalmaBoard[row][col] == '.' && depth == 2)
+            {
+                res.push_back(make_tuple(std::make_pair(row,col),0));
+                findNeighbors(row, col, res);
+            }
+        }
+    
+    }
+
+    void moveDown(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result, int depth)
+    {
+    
+    }
+    
+    void moveDownNeigh(int row, int col, vector<coordinate_dis> res, int depth)
+    {
+    
+    }
+
+    void moveEast(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result, int depth)
+    {
+    
+    }
+
+    void moveEastNeigh(int row, int col, vector<coordinate_dis> res, int depth)
+    {
+    
+    }
+
+    void moveWest(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result, int depth)
+    {
+    
+    }
+
+    void moveWestNeigh(int row, int col, vector<coordinate_dis> res, int depth)
+    {
+    
+    }
+
+    void moveNE(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result, int depth)
+    {
+    
+    }
+
+    void moveNENeigh(int row, int col, vector<coordinate_dis> res, int depth)
+    {
+    
+    }
+
+
+    void moveNW(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result, int depth)
+    {
+    
+    }
+
+    void moveNWNeigh(int row, int col, vector<coordinate_dis> res, int depth)
+    {
+    
+    }
+
+    void moveSE(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result, int depth)
+    {
+    
+    }
+
+    void moveSENeigh(int row, int col, vector<coordinate_dis> res, int depth)
+    {
+    
+    }
+
+    void moveSW(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> result, int depth)
+    {
+    
+    }
+
+    void moveSWNeigh(int row, int col, vector<coordinate_dis> res, int depth)
+    {
+    
+    }
+
+    void searchNeighbors(int row, int col, multimap<xyCoordinates, vector<coordinate_dis>> &result)
+    {
+        string path = to_string(row)+","+to_string(col);
+
+        resetVisited();
+        moveUp(row, col, result, 1, path);
+        
+        resetVisited();
+        moveDown(row, col, result, 1, path);
+        
+        resetVisited();
+        moveEast(row, col, result, 1, path);
+        
+        resetVisited();
+        moveWest(row, col, result, 1, path);
+        
+        resetVisited();
+        moveNE(row, col, result, 1, path);
+        
+        resetVisited();
+        moveNW(row, col, result, 1, path);
+        
+        resetVisited();
+        moveSE(row, col, result, 1, path);
+        
+        resetVisited();
+        moveSW(row, col, result, 1, path);
+    }
+
+
+    void findLegalMoves(char turn)
+    {
+        int row, col;
+        multimap<xyCoordinates, vector<coordinate_dis>> result;
+
+        if(turn == 'W')
+        {
+            for(auto itr = mWhitePawn.begin(); itr != mWhitePawn.end(); itr++)
+            {
+                row = itr->first;
+                col = itr->second;
+
+                searchNeighbors(row, col, result);
+            }
+        }
+        else
+        {
+            for(auto itr = mBlackPawn.begin(); itr != mBlackPawn.end(); itr++)
+            {
+                row = itr->first;
+                col = itr->second;
+            
+                searchNeighbors(row, col, result);
+            }
+        }
+    }
+
+};
 
 int main()
 {
